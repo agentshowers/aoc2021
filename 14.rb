@@ -1,30 +1,22 @@
-#!/Users/joao/.rbenv/shims/ruby
+#!/Users/joaoamorim/.rvm/rubies/ruby-3.0.0/bin/ruby
 
-def build_pair(a, b, rules, steps, memo)
-  key = "#{a}#{b}#{steps}"
-  return memo[key] if memo[key]
-  middle_char = rules["#{a}#{b}"]
-  sum = { middle_char => 1}
-  if steps > 1
-    sum_left = build_pair(a, middle_char, rules, steps-1, memo)
-    sum.merge!(sum_left) { |_, a, b| a + b }
-    sum_right = build_pair(middle_char, b, rules, steps-1, memo)
-    sum.merge!(sum_right) { |_, a, b| a + b }
-  end
-  memo[key] = sum
-  sum
-end
+def calculate(template, rules, n)
+  counts = template.tally
+  pairs = template.each_cons(2).tally
 
-def calculate(template, rules, steps)
-  memo = {}
-  sum = { template[0] => 1}
-  (1..template.length - 1).each do |i|
-    int_sum = build_pair(template[i-1], template[i], rules, steps, memo)
-    sum.merge!(int_sum) { |_, a, b| a + b }
-    sum[template[i]] = (sum[template[i]] || 0) + 1
+  n.times do
+    new_pairs = {}
+    pairs.each do |pair, count|
+      polymer = rules[pair.join]
+      counts[polymer] = (counts[polymer] || 0) + count
+      new_pairs[[pair[0], polymer]] = (new_pairs[[pair[0], polymer]] || 0) + count
+      new_pairs[[polymer, pair[1]]] = (new_pairs[[polymer, pair[1]]] || 0) + count
+    end
+    pairs = new_pairs
   end
-  sorted_tally = sum.sort_by { |_, v| v }
-  sorted_tally.last[1] - sorted_tally.first[1]
+
+  sorted_count = counts.sort_by { |_, v| v }
+  sorted_count.last[1] - sorted_count.first[1]
 end
 
 def star_one(template, rules)
