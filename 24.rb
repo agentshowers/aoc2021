@@ -4,11 +4,6 @@ instructions = File.readlines("24_input.txt", chomp: true).map{ |line| line.spli
 a = (0..13).to_a.map { |i| instructions[i*18 + 4][2].to_i }
 b = (0..13).to_a.map { |i| instructions[i*18 + 5][2].to_i }
 c = (0..13).to_a.map { |i| instructions[i*18 + 15][2].to_i }
-# instructions.each_slice(18) do |slice|
-#   a << slice[4][2].to_i
-#   b << slice[5][2].to_i
-#   c << slice[15][2].to_i
-# end
 
 min = Array.new(14)
 max = Array.new(14)
